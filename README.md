@@ -1,6 +1,6 @@
 # mioku-plugin-terraria
 
-为 Mioku 提供 Terraria（TShock）服务器与 QQ 群消息互通能力，使用 [TianSuo](https://github.com/17TheWord/QueQiao) 协议（JSON over WebSocket）。
+为 Mioku 提供 Terraria（TShock）服务器与 QQ 群消息互通能力，使用 [TianSuo](https://github.com/Jerryplusy/TianSuo) 协议（JSON over WebSocket）。
 
 ## 功能特性
 
@@ -11,7 +11,7 @@
 
 ## 服务端要求
 
-Terraria 服务器需安装 [TianSuo](https://github.com/17TheWord/QueQiao) TShock 插件
+Terraria 服务器需安装 [TianSuo](https://github.com/Jerryplusy/TianSuo) TShock 插件
 
 ## 配置
 
