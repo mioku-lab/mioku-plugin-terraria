@@ -9,13 +9,9 @@
 - **多服务器支持**：可同时连接多台 Terraria 服务器，每台独立配置
 - **自动重连**：连接断开后按指数退避自动重连，可配置最大重试次数
 
-## 服务器端要求
+## 服务端要求
 
 Terraria 服务器需安装 [TianSuo](https://github.com/17TheWord/QueQiao) TShock 插件
-
-```bash
-bun install
-```
 
 ## 配置
 
@@ -32,6 +28,6 @@ bun install
 
 ## 鸣谢
 
-- [TianSuo](https://github.com/17TheWord/QueQiao)：Terraria WebSocket 桥
+- [TianSuo](https://github.com/Jerryplusy/TianSuo)：Terraria WebSocket 桥
 - [TShock](https://github.com/TShock/TShock) 与 [Pryaxis](https://github.com/Pryaxis)：Terraria 服务端框架与插件 API
 - [Re-Logic](https://www.terraria.org/)：Terraria
