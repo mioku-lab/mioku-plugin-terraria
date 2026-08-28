@@ -1,4 +1,4 @@
-import { definePlugin, getService, Services, type MiokiContext } from "mioku";
+import { definePlugin, getService, Services, type MiokuContext } from "mioku";
 import { handleStatus } from "./handlers/status";
 import { handleSync } from "./handlers/sync";
 import { handleReconnect } from "./handlers/reconnect";
@@ -22,7 +22,7 @@ export default definePlugin({
   version: "1.0.0",
   description: "Terraria 服务器与 QQ 群消息互通插件，基于 TianSuo 协议",
 
-  async setup(ctx: MiokiContext) {
+  async setup(ctx: MiokuContext) {
     const configService = getService(ctx, Services.Config);
 
     const configHandler = createConfigHandler(configService);
@@ -112,7 +112,7 @@ export default definePlugin({
 });
 
 async function handleTerrariaEvent(
-  ctx: MiokiContext,
+  ctx: MiokuContext,
   raw: { serverName: string; name: string; data: Record<string, unknown> },
   config: TerrariaConfig,
   configHandler: ReturnType<typeof createConfigHandler>,
@@ -152,11 +152,11 @@ async function handleTerrariaEvent(
   const groups = serverItem.group_list ? [serverItem.group_list] : [];
 
   for (const botId of bots) {
-    const bot = ctx.pickBot(Number(botId));
+    const bot = ctx.pickBot(String(botId));
     if (!bot) continue;
     for (const groupId of groups) {
       try {
-        await bot.sendGroupMsg(Number(groupId), messageText);
+        await bot.sendMessage({ type: "group", group_id: String(groupId) }, messageText);
       } catch (err) {
         ctx.logger.error(
           `[Terraria] 发送消息到群 ${groupId} 失败: ${err}`,
@@ -167,7 +167,7 @@ async function handleTerrariaEvent(
 }
 
 async function forwardToTerraria(
-  ctx: MiokiContext,
+  ctx: MiokuContext,
   event: any,
   config: TerrariaConfig,
   configHandler: ReturnType<typeof createConfigHandler>,
