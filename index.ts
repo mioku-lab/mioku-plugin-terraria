@@ -152,11 +152,11 @@ async function handleTerrariaEvent(
   const groups = serverItem.group_list ? [serverItem.group_list] : [];
 
   for (const botId of bots) {
-    const bot = ctx.pickBot(String(botId));
+    const bot = ctx.pickBot(botId);
     if (!bot) continue;
     for (const groupId of groups) {
       try {
-        await bot.sendMessage({ type: "group", group_id: String(groupId) }, messageText);
+        await bot.sendMessage({ type: "group", group_id: groupId}, messageText);
       } catch (err) {
         ctx.logger.error(
           `[Terraria] 发送消息到群 ${groupId} 失败: ${err}`,
