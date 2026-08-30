@@ -1,21 +1,20 @@
 {
   "name": "mioku-plugin-terraria",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Terraria 服务器与 QQ 群消息互通插件，基于 TianSuo 协议",
   "main": "index.ts",
   "type": "module",
   "keywords": [
-    "mioku",
-    "terraria",
-    "tshock",
-    "tiansuo"
+    "mioku"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/mioku-lab/mioku-plugin-terraria.git"
   },
   "mioku": {
-    "services": ["config"],
+    "services": [
+      "config"
+    ],
     "accessHooks": [
       {
         "id": "/ts 状态",
@@ -67,12 +66,10 @@
     "ws": "^8.18.0"
   },
   "peerDependencies": {
-    "mioku": "^0.8.0",
-    "mioki": "^0.16.0"
+    "mioku": "^1.0.0"
   },
   "devDependencies": {
     "mioku": "workspace:*",
-    "mioki": "^0.16.0",
     "@types/ws": "^8.5.13"
   }
 }
