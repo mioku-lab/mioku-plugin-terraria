@@ -87,7 +87,7 @@ export default definePlugin({
             return;
           }
           case "重连": {
-            if (ctx.isOwner?.(event)) {
+            if (ctx.isMaster?.(event)) {
               await handleReconnect(serverManager, async (msg) => {
                 await event.reply(msg);
               });
@@ -195,7 +195,7 @@ async function forwardToTerraria(
       const isAllowed = isCommandAllowed(
         commandText,
         server,
-        ctx.isOwner?.(event) ?? false,
+        ctx.isMaster?.(event) ?? false,
         event.user_id,
       );
       if (!isAllowed) continue;
