@@ -19,8 +19,6 @@ import { PROTOCOL, type TerrariaConfig, type TerrariaEvent } from "./types";
 
 export default definePlugin({
   name: "terraria",
-  version: "1.0.0",
-  description: "Terraria 服务器与 QQ 群消息互通插件，基于 TianSuo 协议",
 
   async setup(ctx: MiokuContext) {
     const configService = getService(ctx, Services.Config);
