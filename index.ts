@@ -2,7 +2,6 @@ import { definePlugin, getService, Services, type MiokuContext } from "mioku";
 import { handleStatus } from "./handlers/status";
 import { handleSync } from "./handlers/sync";
 import { handleReconnect } from "./handlers/reconnect";
-import { parseTsCommand } from "./utils/command-router";
 import { createConfigHandler } from "./utils/config-handler";
 import {
   formatQqToTerraria,
@@ -40,65 +39,86 @@ export default definePlugin({
     serverManager.startServers(config);
     ctx.logger.info("Terraria 插件已就绪");
 
-    ctx.handle("message", async (event) => {
-      const text = ctx.text(event).trim();
+    const requireGroup = (event: any): number | undefined => {
       const groupId =
         "group_id" in event && typeof event.group_id === "number"
           ? event.group_id
           : undefined;
+      return groupId;
+    };
 
-      const parsed = parseTsCommand(text);
-      if (parsed) {
-        if (!groupId) return;
+    ctx.command({
+      name: "/ts 状态",
+      match: /^\/ts\s*状态(?:\s|$)/,
+      prefixes: false,
+      permission: "master",
+      description: "查看所有已配置服务器的 WebSocket 连接状态",
+      handler: async ({ event }) => {
+        if (!requireGroup(event)) return;
+        await handleStatus(serverManager, config, async (msg) => {
+          await event.reply(msg);
+        });
+      },
+    });
+    ctx.command({
+      name: "/ts 开启同步",
+      match: /^\/ts\s*开启同步(?:\s|$)/,
+      prefixes: false,
+      permission: "master",
+      description: "开启指定服务器的群聊消息同步功能",
+      usage: "/ts 开启同步 <服务器名称>",
+      handler: async ({ event, args }) => {
+        if (!requireGroup(event)) return;
+        await handleSync(
+          args[0],
+          true,
+          configHandler,
+          config,
+          async (msg) => {
+            await event.reply(msg);
+          },
+        );
+      },
+    });
+    ctx.command({
+      name: "/ts 关闭同步",
+      match: /^\/ts\s*关闭同步(?:\s|$)/,
+      prefixes: false,
+      permission: "master",
+      description: "关闭指定服务器的群聊消息同步功能",
+      usage: "/ts 关闭同步 <服务器名称>",
+      handler: async ({ event, args }) => {
+        if (!requireGroup(event)) return;
+        await handleSync(
+          args[0],
+          false,
+          configHandler,
+          config,
+          async (msg) => {
+            await event.reply(msg);
+          },
+        );
+      },
+    });
+    ctx.command({
+      name: "/ts 重连",
+      match: /^\/ts\s*重连(?:\s|$)/,
+      prefixes: false,
+      permission: "master",
+      description: "断开并重新建立所有服务器的 WebSocket 连接",
+      handler: async ({ event }) => {
+        if (!requireGroup(event)) return;
+        await handleReconnect(serverManager, async (msg) => {
+          await event.reply(msg);
+        });
+      },
+    });
 
-        switch (parsed.action) {
-          case "状态": {
-            await handleStatus(serverManager, config, async (msg) => {
-              await event.reply(msg);
-            });
-            return;
-          }
-          case "开启同步": {
-            const serverName = parsed.args[0];
-            await handleSync(
-              serverName,
-              true,
-              configHandler,
-              config,
-              async (msg) => {
-                await event.reply(msg);
-              },
-            );
-            return;
-          }
-          case "关闭同步": {
-            const serverName = parsed.args[0];
-            await handleSync(
-              serverName,
-              false,
-              configHandler,
-              config,
-              async (msg) => {
-                await event.reply(msg);
-              },
-            );
-            return;
-          }
-          case "重连": {
-            if (ctx.isMaster?.(event)) {
-              await handleReconnect(serverManager, async (msg) => {
-                await event.reply(msg);
-              });
-            }
-            return;
-          }
-          case "":
-            return;
-        }
-        return;
-      }
-
+    ctx.handle("message", async (event) => {
+      const groupId = requireGroup(event);
       if (!groupId) return;
+      const text = ctx.text(event)?.trim();
+      if (text?.startsWith("/ts")) return;
       await forwardToTerraria(ctx, event, config, configHandler, serverManager);
     });
 
