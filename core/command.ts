@@ -14,7 +14,7 @@ export function isCommandAllowed(
   text: string,
   serverItem: TerrariaServerConfig,
   isMaster: boolean,
-  userId: number | string | undefined,
+  userId: string | undefined,
 ): boolean {
   if (isMaster) return true;
 

@@ -39,18 +39,13 @@ export default definePlugin({
     serverManager.startServers(config);
     ctx.logger.info("Terraria 插件已就绪");
 
-    const requireGroup = (event: any): number | undefined => {
-      const groupId =
-        "group_id" in event && typeof event.group_id === "number"
-          ? event.group_id
-          : undefined;
-      return groupId;
-    };
+    const requireGroup = (event: any): string | undefined =>
+      String(event?.group_id ?? "").trim() || undefined;
 
     ctx.command({
-      name: "/ts 状态",
-      match: /^\/ts\s*状态(?:\s|$)/,
-      prefixes: false,
+      name: "ts 状态",
+      prefixes: ["/", "."],
+      match: /^ts\s*状态(?:\s|$)/,
       permission: "master",
       description: "查看所有已配置服务器的 WebSocket 连接状态",
       handler: async ({ event }) => {
@@ -61,12 +56,12 @@ export default definePlugin({
       },
     });
     ctx.command({
-      name: "/ts 开启同步",
-      match: /^\/ts\s*开启同步(?:\s|$)/,
-      prefixes: false,
+      name: "ts 开启同步",
+      prefixes: ["/", "."],
+      match: /^ts\s*开启同步(?:\s|$)/,
       permission: "master",
       description: "开启指定服务器的群聊消息同步功能",
-      usage: "/ts 开启同步 <服务器名称>",
+      usage: ".ts 开启同步 <服务器名称>",
       handler: async ({ event, args }) => {
         if (!requireGroup(event)) return;
         await handleSync(
@@ -81,12 +76,12 @@ export default definePlugin({
       },
     });
     ctx.command({
-      name: "/ts 关闭同步",
-      match: /^\/ts\s*关闭同步(?:\s|$)/,
-      prefixes: false,
+      name: "ts 关闭同步",
+      prefixes: ["/", "."],
+      match: /^ts\s*关闭同步(?:\s|$)/,
       permission: "master",
       description: "关闭指定服务器的群聊消息同步功能",
-      usage: "/ts 关闭同步 <服务器名称>",
+      usage: ".ts 关闭同步 <服务器名称>",
       handler: async ({ event, args }) => {
         if (!requireGroup(event)) return;
         await handleSync(
@@ -101,9 +96,9 @@ export default definePlugin({
       },
     });
     ctx.command({
-      name: "/ts 重连",
-      match: /^\/ts\s*重连(?:\s|$)/,
-      prefixes: false,
+      name: "ts 重连",
+      prefixes: ["/", "."],
+      match: /^ts\s*重连(?:\s|$)/,
       permission: "master",
       description: "断开并重新建立所有服务器的 WebSocket 连接",
       handler: async ({ event }) => {
@@ -118,7 +113,7 @@ export default definePlugin({
       const groupId = requireGroup(event);
       if (!groupId) return;
       const text = ctx.text(event)?.trim();
-      if (text?.startsWith("/ts")) return;
+      if (text && /^[./]ts\b/.test(text)) return;
       await forwardToTerraria(ctx, event, config, configHandler, serverManager);
     });
 
@@ -196,9 +191,10 @@ async function forwardToTerraria(
     `[Terraria] 收到群消息 group=${event.group_id} text=${text}`,
   );
 
-  if (!event.group_id) return;
+  const groupId = String(event.group_id ?? "").trim();
+  if (!groupId) return;
 
-  const servers = configHandler.getServersForGroup(event.group_id);
+  const servers = configHandler.getServersForGroup(groupId);
   if (servers.length === 0) return;
 
   const msgList: QqMessagePart[] = Array.isArray(event.message)
