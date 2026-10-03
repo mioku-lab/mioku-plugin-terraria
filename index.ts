@@ -154,6 +154,8 @@ async function handleTerrariaEvent(
           : undefined,
   };
 
+  if (!event.player?.name?.trim() && config.ignore_unknown_player) return;
+
   const messageText = formatTerrariaEvent(event, config);
   if (!messageText) return;
 

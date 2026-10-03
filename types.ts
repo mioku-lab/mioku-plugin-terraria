@@ -56,12 +56,14 @@ export interface TerrariaConfig {
   servers: TerrariaServerConfig[];
   say_way: string;
   display_server_name: boolean;
+  ignore_unknown_player: boolean;
 }
 
 export const DEFAULT_CONFIG: TerrariaConfig = {
   servers: [],
   say_way: "说：",
   display_server_name: true,
+  ignore_unknown_player: true,
 };
 
 export function normalizeConfig(raw: Partial<TerrariaConfig>): TerrariaConfig {
@@ -103,5 +105,9 @@ export function normalizeConfig(raw: Partial<TerrariaConfig>): TerrariaConfig {
       typeof raw.display_server_name === "boolean"
         ? raw.display_server_name
         : DEFAULT_CONFIG.display_server_name,
+    ignore_unknown_player:
+      typeof raw.ignore_unknown_player === "boolean"
+        ? raw.ignore_unknown_player
+        : DEFAULT_CONFIG.ignore_unknown_player,
   };
 }

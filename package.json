@@ -1,6 +1,6 @@
 {
   "name": "mioku-plugin-terraria",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Terraria 服务器与 QQ 群消息互通插件，基于 TianSuo 协议",
   "main": "index.ts",
   "type": "module",

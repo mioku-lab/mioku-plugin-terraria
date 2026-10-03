@@ -13,6 +13,11 @@ fields:
     type: switch
     description: 消息中是否显示服务器名称
 
+  - key: base.ignore_unknown_player
+    label: 不推送未知玩家信息
+    type: switch
+    description: 开启后，不推送玩家名称缺失的事件（如未知玩家加入、退出、聊天、死亡）
+
   - key: base.servers
     label: 服务器列表
     type: array
@@ -83,5 +88,6 @@ fields:
 keys:
   - base.say_way
   - base.display_server_name
+  - base.ignore_unknown_player
   - base.servers
 ```
